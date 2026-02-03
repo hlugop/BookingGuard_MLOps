@@ -274,14 +274,22 @@ class FeatureStore:
 
             cursor.execute(
                 sql,
-                (version, experiment_id, model_name, feature_names_json, len(feature_names)),
+                (
+                    version,
+                    experiment_id,
+                    model_name,
+                    feature_names_json,
+                    len(feature_names),
+                ),
             )
             conn.commit()
 
         if set_active:
             self.set_active_version(version)
 
-        logger.info(f"Registered feature version: {version} ({len(feature_names)} features)")
+        logger.info(
+            f"Registered feature version: {version} ({len(feature_names)} features)"
+        )
 
     def store_features(
         self,
@@ -625,7 +633,9 @@ class FeatureStore:
 
             # Activate the specified version
             if self.is_postgres:
-                sql = f"UPDATE feature_metadata SET is_active = TRUE WHERE version = {ph}"
+                sql = (
+                    f"UPDATE feature_metadata SET is_active = TRUE WHERE version = {ph}"
+                )
             else:
                 sql = f"UPDATE feature_metadata SET is_active = 1 WHERE version = {ph}"
 

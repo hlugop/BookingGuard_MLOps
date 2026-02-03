@@ -118,9 +118,7 @@ class TestDatabaseConfig:
 
     def test_is_cloud_db_true_with_supabase(self):
         """Test is_cloud_db returns True when Supabase URL is set."""
-        config = DatabaseConfig(
-            supabase_url="postgresql://user:pass@host:5432/db"
-        )
+        config = DatabaseConfig(supabase_url="postgresql://user:pass@host:5432/db")
         assert config.is_cloud_db is True
 
     def test_custom_sqlite_path(self):
@@ -168,12 +166,12 @@ class TestSettings:
 
     def test_settings_database_with_supabase(self):
         """Test Settings with Supabase configuration."""
-        db_config = DatabaseConfig(
-            supabase_url="postgresql://user:pass@host:5432/db"
-        )
+        db_config = DatabaseConfig(supabase_url="postgresql://user:pass@host:5432/db")
         settings = Settings(database=db_config)
         assert settings.database.is_cloud_db is True
-        assert settings.database.backend_store_uri == "postgresql://user:pass@host:5432/db"
+        assert (
+            settings.database.backend_store_uri == "postgresql://user:pass@host:5432/db"
+        )
 
     def test_environment_validation(self):
         """Test environment must be valid."""
