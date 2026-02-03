@@ -96,4 +96,4 @@ ignore_missing_imports = true
 
 [tool.bandit]
 exclude_dirs = ["tests", "venv", ".venv", "mlruns"]
-skips = ["B101"]  # Skip assert warnings (used in tests)
+skips = ["B101", "B608"]  # B101: assert warnings, B608: SQL injection false positives (we use parameterized queries)

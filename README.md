@@ -1,7 +1,7 @@
-# Hotel Reservation Cancellation Prediction - MLOps Project
+# BookingGuard MLOps - Hotel Cancellation Prediction
 
-[![CI/CD Pipeline](https://github.com/hlugop/HotelCancellationPredictor/actions/workflows/ci.yml/badge.svg)](https://github.com/hlugop/HotelCancellationPredictor/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/hlugop/HotelCancellationPredictor/branch/main/graph/badge.svg)](https://codecov.io/gh/hlugop/HotelCancellationPredictor)
+[![CI/CD Pipeline](https://github.com/hlugop/BookingGuard_MLOps/actions/workflows/ci.yml/badge.svg)](https://github.com/hlugop/BookingGuard_MLOps/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/hlugop/BookingGuard_MLOps/branch/main/graph/badge.svg)](https://codecov.io/gh/hlugop/BookingGuard_MLOps)
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -141,8 +141,8 @@ Esta es la forma más rápida de levantar todo el proyecto. Solo necesitas Docke
 ### Paso 1: Clonar y entrar al proyecto
 
 ```bash
-git clone https://github.com/hlugop/HotelCancellationPredictor.git
-cd HotelCancellationPredictor
+git clone https://github.com/hlugop/BookingGuard_MLOps.git
+cd BookingGuard_MLOps
 ```
 
 ### Paso 2: Levantar los servicios
@@ -219,8 +219,8 @@ Si prefieres correr el proyecto sin Docker, aquí están los pasos.
 ### Paso 1: Clonar y configurar el entorno
 
 ```bash
-git clone https://github.com/hlugop/HotelCancellationPredictor.git
-cd HotelCancellationPredictor
+git clone https://github.com/hlugop/BookingGuard_MLOps.git
+cd BookingGuard_MLOps
 
 # Crear entorno virtual
 python -m venv venv
