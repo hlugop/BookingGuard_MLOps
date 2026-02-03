@@ -1,0 +1,99 @@
+# Hotel Cancellation Prediction - Docker Compose
+# ==============================================
+# Use this file to run the complete application stack
+#
+# USAGE:
+# ------
+# Local development (SQLite - default):
+#   docker-compose up
+#
+# Production with Supabase (PostgreSQL):
+#   1. Copy .env.example to .env
+#   2. Fill in SUPABASE_DB_URL with your Supabase connection string
+#   3. docker-compose up
+#
+# The stack automatically uses PostgreSQL when SUPABASE_DB_URL is set
+
+services:
+  # ==========================================================================
+  # FastAPI Application
+  # ==========================================================================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: hotel-cancellation-api
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+      - MODEL_URI=models:/hotel_cancellation_model/latest
+      - ARTIFACTS_DIR=artifacts/models
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+    volumes:
+      - ./artifacts:/app/artifacts
+      - ./data:/app/data:ro
+    depends_on:
+      mlflow:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # ==========================================================================
+  # MLflow Tracking Server
+  # ==========================================================================
+  # Backend store:
+  #   - Default (no .env): SQLite (local, ephemeral)
+  #   - With SUPABASE_DB_URL: PostgreSQL (persistent, cloud)
+  mlflow:
+    build:
+      context: .
+      dockerfile: Dockerfile.mlflow
+    container_name: mlflow-server
+    ports:
+      - "5000:5000"
+    environment:
+      # Use Supabase PostgreSQL if SUPABASE_DB_URL is set, otherwise SQLite
+      - MLFLOW_BACKEND_STORE_URI=${SUPABASE_DB_URL:-sqlite:///mlflow/db/mlflow.db}
+      - MLFLOW_ARTIFACT_ROOT=${MLFLOW_ARTIFACT_ROOT:-/mlflow/artifacts}
+    volumes:
+      # Local artifacts storage
+      - mlflow-artifacts:/mlflow/artifacts
+      # Local SQLite DB (only used when SUPABASE_DB_URL is not set)
+      - mlflow-db:/mlflow/db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - app-network
+
+# =============================================================================
+# VOLUMES
+# =============================================================================
+volumes:
+  # MLflow artifacts (models, plots, metrics visualizations)
+  mlflow-artifacts:
+    driver: local
+  # MLflow SQLite database (only for local development without Supabase)
+  mlflow-db:
+    driver: local
+
+# =============================================================================
+# NETWORKS
+# =============================================================================
+networks:
+  app-network:
+    driver: bridge

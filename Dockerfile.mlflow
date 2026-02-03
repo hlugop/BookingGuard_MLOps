@@ -1,0 +1,43 @@
+# MLflow Tracking Server
+# ======================
+# Custom image with MLflow pre-installed
+# Supports both SQLite (local) and PostgreSQL (Supabase)
+
+FROM python:3.11-slim
+
+WORKDIR /mlflow
+
+# Install system dependencies
+# - curl: healthcheck
+# - libpq-dev: PostgreSQL client library
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install MLflow with PostgreSQL support
+RUN pip install --no-cache-dir \
+    mlflow>=2.9.0 \
+    psycopg2-binary>=2.9.0
+
+# Create directories for artifacts and database with proper permissions
+RUN mkdir -p /mlflow/artifacts /mlflow/db && chmod -R 777 /mlflow
+
+# Environment variables with defaults (SQLite for local dev)
+ENV PYTHONUNBUFFERED=1
+ENV MLFLOW_BACKEND_STORE_URI=sqlite:///mlflow/db/mlflow.db
+ENV MLFLOW_ARTIFACT_ROOT=/mlflow/artifacts
+
+# Expose port
+EXPOSE 5000
+
+# Run MLflow server using environment variables
+# This allows switching between SQLite and PostgreSQL via env vars:
+# - Local dev: sqlite:///mlflow/db/mlflow.db (default)
+# - Production: postgresql://user:pass@host:port/db (Supabase)
+CMD mlflow server \
+    --host 0.0.0.0 \
+    --port 5000 \
+    --backend-store-uri ${MLFLOW_BACKEND_STORE_URI} \
+    --default-artifact-root ${MLFLOW_ARTIFACT_ROOT} \
+    --allowed-hosts "*"

@@ -1,0 +1,51 @@
+# Hotel Cancellation Prediction - Configuration
+# =============================================
+
+# Data Configuration
+data:
+  raw_path: "data/raw/Hotel Reservations.csv"
+  processed_path: "data/processed"
+
+# Model Configuration
+model:
+  name: "hotel_cancellation_model"
+  algorithm: "xgboost"
+  # XGBoost parameters (directly, not nested under 'params')
+  n_estimators: 100
+  max_depth: 6
+  learning_rate: 0.1
+  eval_metric: "logloss"
+
+# Training Configuration
+training:
+  test_size: 0.2
+  random_state: 42
+  stratify: true
+
+# MLflow Configuration
+mlflow:
+  experiment_name: "hotel_cancellation_prediction"
+  tracking_uri: null  # Local file store
+  registry_uri: null
+
+# Artifacts Configuration
+artifacts:
+  models_dir: "artifacts/models"
+
+# API Configuration
+api:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 1
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# Feature Store Configuration
+feature_store:
+  enabled: true
+  db_path: "feature_store.db"
+  auto_store: true
+  auto_retrieve: true

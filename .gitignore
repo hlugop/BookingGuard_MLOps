@@ -1,0 +1,122 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+.vscode/
+.idea/
+.claude/          # <-- Posible nombre de la carpeta de Claude
+claude_data/      # <-- Otra variante posible
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# MLOps & Data (No subir datos pesados ni modelos locales)
+
+mlflow-data/      # Ignora la base de datos local de MLflow
+artifacts/        # Ignora artefactos generados localmente
+mlruns/
+*.db
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# MLflow
+mlruns/
+mlartifacts/
+
+# Model artifacts (tracked separately)
+artifacts/models/*.joblib
+artifacts/models/*.pkl
+artifacts/models/*.png
+
+# Data (keep structure, ignore large files)
+data/processed/*
+!data/processed/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Internal documentation (not for public sharing)
+docs/MLOPS_LEARNING_GUIDE.md
+docs/MLOPS_HANDBOOK_VOL2.md
+docs/MLOPS_FUNDAMENTALS_VOL0.md
+docs/MLOPS_INTERVIEW_GUIDE.md
