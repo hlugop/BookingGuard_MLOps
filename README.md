@@ -543,6 +543,17 @@ Por defecto, MLflow usa SQLite local que se pierde cuando el volumen de Docker s
 | Uptime | 99.9% SLA |
 | Dashboard | Incluido |
 
+### ¿Qué se persiste en Supabase?
+
+Cuando Supabase está configurado, **todo** queda en la nube:
+
+| Componente | Tablas en Supabase | Descripción |
+|------------|-------------------|-------------|
+| **MLflow Experiments** | `experiments` | Experimentos de entrenamiento |
+| **MLflow Runs** | `runs`, `metrics`, `params` | Ejecuciones, métricas, parámetros |
+| **Model Registry** | `model_versions`, `registered_models` | Modelos registrados y versionados |
+| **Feature Store** | `feature_metadata`, `feature_vectors` | Features computadas y versionadas |
+
 ### Configuración de Supabase
 
 #### Paso 1: Crear cuenta y proyecto
@@ -553,11 +564,13 @@ Por defecto, MLflow usa SQLite local que se pierde cuando el volumen de Docker s
 
 #### Paso 2: Obtener connection string
 
-1. En el dashboard, ve a **Settings** > **Database**
-2. En la sección "Connection string", selecciona **URI**
+> **Importante**: Usa el **Session Pooler** (no Direct Connection) para compatibilidad con Docker (IPv4).
+
+1. En el dashboard, ve a **Connect** (botón verde)
+2. En **Connection String**, selecciona **Method: Session Pooler**
 3. Copia el string que se ve así:
    ```
-   postgresql://postgres.[PROJECT_REF]:[PASSWORD]@aws-0-us-east-1.pooler.supabase.com:6543/postgres
+   postgresql://postgres.[PROJECT_REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres
    ```
 
 #### Paso 3: Configurar el proyecto
@@ -572,7 +585,7 @@ nano .env  # o usa tu editor preferido
 
 En `.env`, cambia esta línea:
 ```bash
-SUPABASE_DB_URL=postgresql://postgres.[TU_PROJECT_REF]:[TU_PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres
+SUPABASE_DB_URL=postgresql://postgres.[TU_PROJECT_REF]:[TU_PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres
 ```
 
 #### Paso 4: Levantar con persistencia
@@ -581,19 +594,31 @@ SUPABASE_DB_URL=postgresql://postgres.[TU_PROJECT_REF]:[TU_PASSWORD]@aws-0-[REGI
 docker-compose up --build -d
 ```
 
-Ahora todos los experimentos de MLflow se guardan en Supabase.
+Ahora MLflow, Model Registry y Feature Store guardan todo en Supabase.
 
 ### Verificar conexión
 
 ```bash
 # Ver logs de MLflow para confirmar conexión
-docker-compose logs mlflow | grep -i postgres
+docker-compose logs mlflow | grep -i "Creating initial"
 ```
 
 Deberías ver algo como:
 ```
-INFO:mlflow.store.db.utils:Creating initial MLflow database tables...
+INFO mlflow.store.db.utils: Creating initial MLflow database tables...
+INFO alembic.runtime.migration: Context impl PostgresqlImpl.
 ```
+
+### Entrenar y registrar modelo
+
+```bash
+# Entrenar modelo (queda registrado en Supabase)
+docker exec hotel-cancellation-api python src/pipelines/training.py
+```
+
+Después de entrenar puedes verificar en:
+- **MLflow UI**: http://localhost:5000 (experimentos, métricas, modelo)
+- **Supabase Dashboard** → Table Editor (tablas creadas automáticamente)
 
 ### Modo local vs Producción
 
@@ -606,7 +631,7 @@ INFO:mlflow.store.db.utils:Creating initial MLflow database tables...
 
 | Variable | Descripción | Requerida |
 |----------|-------------|-----------|
-| `SUPABASE_DB_URL` | Connection string de Supabase | Solo producción |
+| `SUPABASE_DB_URL` | Connection string (Session Pooler) | Solo producción |
 | `MLFLOW_ARTIFACT_ROOT` | Ruta para artefactos | No (default: /mlflow/artifacts) |
 | `ENVIRONMENT` | development/production | No (default: development) |
 

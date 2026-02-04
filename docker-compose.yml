@@ -35,6 +35,7 @@ services:
     volumes:
       - ./artifacts:/app/artifacts
       - ./data:/app/data:ro
+      - mlflow-artifacts:/mlflow/artifacts
     depends_on:
       mlflow:
         condition: service_healthy
