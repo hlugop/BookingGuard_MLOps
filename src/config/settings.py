@@ -89,7 +89,7 @@ class DatabaseConfig(BaseModel):
     """Database configuration for MLflow backend store."""
 
     # Supabase PostgreSQL connection string
-    # Format: postgresql://postgres.[PROJECT_REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres
+    # Format: postgresql://postgres.[PROJECT_REF]:[PASSWORD]@aws-0-[REGION]...
     supabase_url: Optional[str] = Field(
         default=None,
         description="Supabase PostgreSQL connection string",

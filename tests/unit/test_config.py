@@ -106,7 +106,10 @@ class TestDatabaseConfig:
 
     def test_backend_store_uri_supabase(self):
         """Test backend_store_uri returns Supabase URL when set."""
-        supabase_url = "postgresql://postgres.abc123:password@aws-0-us-east-1.pooler.supabase.com:6543/postgres"
+        supabase_url = (
+            "postgresql://postgres.abc123:password"
+            "@aws-0-us-east-1.pooler.supabase.com:6543/postgres"
+        )
         config = DatabaseConfig(supabase_url=supabase_url)
         assert config.backend_store_uri == supabase_url
         assert config.is_cloud_db is True
